@@ -61,6 +61,21 @@ Route::get('/laporan', function () {
     ));
 })->name('laporan.publik');
 
+// ── ROUTE PUBLIK BARU ──
+Route::get('/profil',           fn() => view('profil.index'))->name('profil.index');
+Route::get('/profil/memoriam',  fn() => view('profil.memoriam'))->name('profil.memoriam');
+Route::get('/profil/pengasuh',  fn() => view('profil.pengasuh'))->name('profil.pengasuh');
+
+Route::get('/kegiatan',         fn() => view('kegiatan.index'))->name('kegiatan.index');
+Route::get('/kegiatan/{id}',    fn($id) => view('kegiatan.show'))->name('kegiatan.show');
+
+Route::get('/pengumuman',       fn() => view('pengumuman.index'))->name('pengumuman.index');
+Route::get('/pengumuman/{id}',  fn($id) => view('pengumuman.show'))->name('pengumuman.show');
+
+Route::get('/alumni',           fn() => view('alumni.index'))->name('alumni.index');
+
+Route::get('/donasi',           fn() => view('donasi.landing'))->name('donasi.landing');
+
 // ── ROUTE ADMIN ──
 Route::prefix('admin')->name('admin.')->group(function () {
 
