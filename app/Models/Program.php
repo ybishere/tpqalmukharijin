@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 
 class Program extends Model
@@ -20,10 +18,5 @@ class Program extends Model
     public function donasis()
     {
         return $this->hasMany(Donasi::class, 'program_id', 'id_program');
-    }
-
-    public function penggunaans()
-    {
-        return $this->hasMany(Penggunaan::class, 'program_id', 'id_program');
     }
 }

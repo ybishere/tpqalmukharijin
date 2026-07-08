@@ -93,50 +93,69 @@ class DonasiPublikController extends Controller
     }
 
     public function webhook(Request $request)
-    {
-        $serverKey   = config('midtrans.server_key');
-        $orderId     = $request->order_id;
-        $statusCode  = $request->status_code;
-        $grossAmount = $request->gross_amount;
+{
+    $serverKey   = config('midtrans.server_key');
+    $orderId     = $request->order_id;
+    $statusCode  = $request->status_code;
+    $grossAmount = $request->gross_amount;
 
-        // Validasi signature
-        $signatureKey = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+    // Validasi signature
+    $signatureKey = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
 
-        if ($signatureKey !== $request->signature_key) {
-            return response()->json(['message' => 'Invalid signature'], 403);
-        }
-
-        $donasi = Donasi::where('midtrans_id', $orderId)->first();
-
-        if (!$donasi) {
-            return response()->json(['message' => 'Donasi not found'], 404);
-        }
-
-        $transactionStatus = $request->transaction_status;
-        $paymentType       = $request->payment_type;
-
-        if ($transactionStatus === 'capture' || $transactionStatus === 'settlement') {
-            if ($donasi->status_bayar !== 'sukses') {
-                $donasi->update([
-                    'status_bayar' => 'sukses',
-                    'metode'       => $paymentType === 'qris' ? 'qris' : 'manual',
-                ]);
-                $donasi->program->increment('dana_terkumpul', $donasi->jumlah);
-
-                // Kirim notifikasi email ke admin
-                try {
-                    Mail::to(config('mail.admin_email', 'admin@tpq-almukharijin.id'))
-                        ->send(new DonasiMasuk($donasi->fresh()->load('program')));
-                } catch (\Exception $e) {
-                    Log::error('Gagal kirim email notifikasi: ' . $e->getMessage());
-                }
-            }
-        } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
-            $donasi->update(['status_bayar' => 'gagal']);
-        } elseif ($transactionStatus === 'pending') {
-            $donasi->update(['status_bayar' => 'menunggu']);
-        }
-
-        return response()->json(['message' => 'OK']);
+    if ($signatureKey !== $request->signature_key) {
+        return response()->json(['message' => 'Invalid signature'], 403);
     }
+
+    $donasi = Donasi::where('midtrans_id', $orderId)->first();
+
+    if (!$donasi) {
+        return response()->json(['message' => 'Donasi not found'], 404);
+    }
+
+    $transactionStatus = $request->transaction_status;
+    $paymentType       = $request->payment_type;
+
+    if ($transactionStatus === 'capture' || $transactionStatus === 'settlement') {
+        if ($donasi->status_bayar !== 'sukses') {
+            $donasi->update([
+                'status_bayar' => 'sukses',
+                'metode'       => $paymentType === 'qris' ? 'qris' : 'manual',
+            ]);
+            $donasi->program->increment('dana_terkumpul', $donasi->jumlah);
+
+            // Email notifikasi
+            try {
+                Mail::to(config('mail.admin_email', 'admin@tpq-almukharijin.id'))
+                    ->send(new DonasiMasuk($donasi->fresh()->load('program')));
+            } catch (\Exception $e) {
+                Log::error('Gagal kirim email notifikasi: ' . $e->getMessage());
+            }
+
+            // WhatsApp notifikasi
+            try {
+                $freshDonasi = $donasi->fresh()->load('program');
+                $pesan = "🌿 *Donasi Masuk — TPQ Al-Mukharijin*\n\n"
+                    . "👤 *Donatur:* " . ($freshDonasi->nama_donatur ?? 'Anonim') . "\n"
+                    . "📋 *Program:* " . ($freshDonasi->program->nama_program ?? '-') . "\n"
+                    . "💰 *Jumlah:* Rp " . number_format($freshDonasi->jumlah, 0, ',', '.') . "\n"
+                    . "💳 *Metode:* " . strtoupper($paymentType) . "\n"
+                    . "🕐 *Waktu:* " . now()->translatedFormat('d F Y, H:i') . " WIB\n\n"
+                    . "Jazakumullah khairan atas kepercayaannya. 🤲";
+
+                \App\Services\WhatsAppService::send(
+                    config('services.fonnte.admin_wa'),
+                    $pesan
+                );
+            } catch (\Exception $e) {
+                Log::error('Gagal kirim WA notifikasi: ' . $e->getMessage());
+            }
+        }
+    } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+        $donasi->update(['status_bayar' => 'gagal']);
+    } elseif ($transactionStatus === 'pending') {
+        $donasi->update(['status_bayar' => 'menunggu']);
+    }
+
+    return response()->json(['message' => 'OK']);
+}
 }

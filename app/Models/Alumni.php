@@ -6,5 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alumni extends Model
 {
-    //
+    protected $table = 'alumni'; // ← tambahkan ini
+    
+    protected $fillable = [
+        'nama',
+        'tahun_angkatan',
+        'keterangan',
+    ];
 }

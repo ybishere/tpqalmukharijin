@@ -1,0 +1,237 @@
+@extends('layouts.app')
+@section('title', 'Infaq & Donasi – TPQ Al-Mukharijin')
+
+@section('content')
+
+{{-- ═══ HERO ═══ --}}
+<section class="relative pt-32 pb-24 overflow-hidden"
+    style="background:linear-gradient(135deg,#011a10 0%,#022c22 40%,#064e3b 100%);">
+    <div class="pattern-bg absolute inset-0 opacity-30"></div>
+    <div class="absolute top-0 left-0 right-0 h-px"
+        style="background:linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent)"></div>
+    <div class="absolute -right-20 -top-20 w-[500px] h-[500px] rounded-full"
+        style="background:radial-gradient(circle,rgba(245,158,11,0.06) 0%,transparent 70%)"></div>
+
+    <div class="relative max-w-6xl mx-auto px-6">
+        <div class="max-w-3xl mx-auto text-center">
+
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <div class="h-px w-16" style="background:linear-gradient(to right,transparent,rgba(217,119,6,0.5))"></div>
+                <span class="text-amber-400/70 text-[11px] font-bold uppercase tracking-[0.25em]">Transparansi & Kepercayaan</span>
+                <div class="h-px w-16" style="background:linear-gradient(to left,transparent,rgba(217,119,6,0.5))"></div>
+            </div>
+
+            <p class="font-arabic text-amber-300 text-3xl md:text-4xl leading-loose mb-3">
+                وَمَا تُنفِقُوا مِنْ خَيْرٍ فَلِأَنفُسِكُمْ
+            </p>
+            <p class="text-white/35 text-sm italic mb-8">
+                "Dan apa saja yang kamu infakkan, maka itu untuk kebaikanmu sendiri." (QS. Al-Baqarah: 272)
+            </p>
+
+            <h1 class="font-extrabold text-white leading-tight mb-5"
+                style="font-size:clamp(2rem,5vw,3.5rem);">
+                Infaq & Donasi<br>
+                <span style="background:linear-gradient(90deg,#fcd34d,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                    TPQ Al-Mukharijin
+                </span>
+            </h1>
+            <p class="text-white/55 text-base leading-relaxed max-w-xl mx-auto mb-10">
+                Setiap rupiah yang Anda infaqkan akan digunakan secara transparan
+                untuk mendukung keberlangsungan pendidikan Al-Quran bagi generasi penerus.
+            </p>
+
+            {{-- Stats strip --}}
+            <div class="grid grid-cols-3 gap-4 max-w-xl mx-auto">
+                @php $persen = ($totalTarget > 0) ? min(100, round(($totalDonasi / $totalTarget) * 100)) : 0; @endphp
+                @foreach([
+                    ['label' => 'Total Terkumpul', 'value' => 'Rp ' . number_format($totalDonasi, 0, ',', '.'), 'color' => 'text-emerald-300'],
+                    ['label' => 'Total Donatur',   'value' => number_format($totalDonatur, 0, ',', '.') . ' org', 'color' => 'text-amber-300'],
+                    ['label' => 'Target Tercapai', 'value' => $persen . '%', 'color' => 'text-blue-300'],
+                ] as $stat)
+                <div class="text-center p-4 rounded-2xl"
+                    style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);">
+                    <p class="font-extrabold text-lg {{ $stat['color'] }}">{{ $stat['value'] }}</p>
+                    <p class="text-white/40 text-[10px] mt-1 font-medium">{{ $stat['label'] }}</p>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- Wave bawah --}}
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0 60L1440 60L1440 20C1200 60 960 0 720 20C480 40 240 0 0 20L0 60Z" fill="#fafaf9"/>
+        </svg>
+    </div>
+</section>
+
+{{-- ═══ PROGRAM DONASI ═══ --}}
+<section class="pt-8 pb-20 bg-[#fafaf9]">
+    <div class="max-w-6xl mx-auto px-6">
+
+        <div class="text-center mb-12 fade-up">
+            <span class="section-label mb-3 justify-center" style="display:inline-flex;">Pilih Program</span>
+            <h2 class="font-extrabold text-stone-900 leading-tight"
+                style="font-size:clamp(1.8rem,3vw,2.5rem);">
+                Program yang Membutuhkan Dukungan
+            </h2>
+            <p class="text-stone-500 text-sm mt-3 max-w-lg mx-auto">
+                Pilih program yang ingin Anda dukung. Semua donasi tercatat dan
+                dilaporkan secara transparan kepada publik.
+            </p>
+        </div>
+
+        @if(isset($programs) && $programs->count())
+        <div class="grid md:grid-cols-2 gap-6 mb-16">
+            @foreach($programs as $prog)
+            @php
+                $p = $prog->target_dana > 0
+                    ? min(100, round(($prog->dana_terkumpul / $prog->target_dana) * 100))
+                    : 0;
+                $sisa = max(0, $prog->target_dana - $prog->dana_terkumpul);
+            @endphp
+            <div class="fade-up card p-7 flex flex-col">
+
+                {{-- Header program --}}
+                <div class="flex items-start justify-between gap-4 mb-5">
+                    <div class="flex-1 min-w-0">
+                        <span class="badge badge-green mb-2">Aktif</span>
+                        <h3 class="font-extrabold text-stone-900 text-lg leading-snug">{{ $prog->nama }}</h3>
+                        @if($prog->deskripsi)
+                        <p class="text-stone-500 text-sm mt-1.5 leading-relaxed line-clamp-2">{{ $prog->deskripsi }}</p>
+                        @endif
+                    </div>
+                    {{-- Persentase lingkaran --}}
+                    <div class="shrink-0 relative w-16 h-16">
+                        <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0fdf4" stroke-width="2.5"/>
+                            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#10b981" stroke-width="2.5"
+                                stroke-dasharray="{{ $p }}, 100"
+                                stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-emerald-700 font-extrabold text-xs">{{ $p }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Progress bar --}}
+                <div class="h-2 rounded-full bg-stone-100 overflow-hidden mb-4">
+                    <div class="h-full rounded-full progress-fill"
+                        data-width="{{ $p }}"
+                        style="width:0%;background:linear-gradient(90deg,#10b981,#f59e0b);transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1);">
+                    </div>
+                </div>
+
+                {{-- Angka --}}
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div class="text-center p-3 rounded-xl bg-emerald-50">
+                        <p class="text-emerald-700 font-extrabold text-sm">
+                            Rp {{ number_format($prog->dana_terkumpul, 0, ',', '.') }}
+                        </p>
+                        <p class="text-stone-400 text-[10px] mt-0.5 font-medium">Terkumpul</p>
+                    </div>
+                    <div class="text-center p-3 rounded-xl bg-stone-50">
+                        <p class="text-stone-600 font-extrabold text-sm">
+                            Rp {{ number_format($prog->target_dana, 0, ',', '.') }}
+                        </p>
+                        <p class="text-stone-400 text-[10px] mt-0.5 font-medium">Target</p>
+                    </div>
+                    <div class="text-center p-3 rounded-xl bg-amber-50">
+                        <p class="text-amber-700 font-extrabold text-sm">
+                            Rp {{ number_format($sisa, 0, ',', '.') }}
+                        </p>
+                        <p class="text-stone-400 text-[10px] mt-0.5 font-medium">Sisa</p>
+                    </div>
+                </div>
+
+                {{-- Tombol donasi --}}
+                <div class="mt-auto">
+                    <a href="{{ route('donasi.form', $prog->id_program) }}"
+                        class="btn-primary w-full justify-center"
+                        style="font-size:14px;padding:12px 24px;">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        Donasi untuk Program Ini
+                    </a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <div class="text-center py-16 border-2 border-dashed border-stone-200 rounded-3xl mb-16">
+            <p class="text-stone-400 text-sm">Belum ada program donasi aktif.</p>
+        </div>
+        @endif
+
+        {{-- ═══ CARA BERDONASI ═══ --}}
+        <div class="fade-up rounded-3xl p-10 mb-12 relative overflow-hidden"
+            style="background:linear-gradient(135deg,#022c22,#064e3b);">
+                <div class="pattern-bg absolute inset-0 opacity-15"></div>
+            <div class="relative">
+                <div class="text-center mb-10">
+                    <span class="text-amber-300 text-[11px] font-bold uppercase tracking-widest">Panduan</span>
+                    <h3 class="font-extrabold text-white text-xl mt-2">Cara Berdonasi</h3>
+                </div>
+                <div class="grid md:grid-cols-4 gap-6">
+                    @foreach([
+                        ['step' => '01', 'judul' => 'Pilih Program', 'desc' => 'Pilih program donasi yang ingin Anda dukung dari daftar di atas.'],
+                        ['step' => '02', 'judul' => 'Isi Data', 'desc' => 'Isi nama, email, dan jumlah donasi yang ingin Anda berikan.'],
+                        ['step' => '03', 'judul' => 'Pembayaran', 'desc' => 'Lakukan pembayaran melalui berbagai metode yang tersedia via Midtrans.'],
+                        ['step' => '04', 'judul' => 'Konfirmasi', 'desc' => 'Donasi Anda tercatat dan akan dilaporkan secara transparan.'],
+                    ] as $step)
+                    <div class="text-center">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 font-extrabold text-lg"
+                            style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.25);color:#fbbf24;">
+                            {{ $step['step'] }}
+                        </div>
+                        <h4 class="text-white font-bold text-sm mb-2">{{ $step['judul'] }}</h4>
+                        <p class="text-white/40 text-xs leading-relaxed">{{ $step['desc'] }}</p>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        {{-- ═══ LINK LAPORAN ═══ --}}
+        <div class="fade-up text-center">
+            <p class="text-stone-500 text-sm mb-3">
+                Ingin melihat bagaimana donasi Anda digunakan?
+            </p>
+            <a href="{{ route('laporan.publik') }}"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-900 transition-colors group">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Lihat Laporan Keuangan Lengkap
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+@endsection
+
+@push('scripts')
+<script>
+const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            if (e.target.classList.contains('fade-up')) e.target.classList.add('visible');
+            if (e.target.classList.contains('progress-fill')) {
+                setTimeout(() => {
+                    e.target.style.width = (e.target.dataset.width || 0) + '%';
+                }, 200);
+            }
+            io.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.15 });
+document.querySelectorAll('.fade-up, .progress-fill').forEach(el => io.observe(el));
+</script>
+@endpush

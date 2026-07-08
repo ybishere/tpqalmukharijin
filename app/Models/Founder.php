@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Founder extends Model
 {
-    //
+    protected $fillable = [
+        'nama',
+        'foto',
+        'jabatan',
+        'status',
+        'keterangan',
+        'quotes',
+        'urutan',
+    ];
 }
