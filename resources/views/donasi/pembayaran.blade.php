@@ -45,6 +45,16 @@
                 💳 Bayar Sekarang
             </button>
 
+            @if(app()->environment('local'))
+<div class="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+    <p class="text-xs text-amber-600 font-semibold mb-2">🧪 Mode Testing</p>
+    <a href="{{ route('donasi.simulasi', $donasi->id_donasi) }}"
+        class="block w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-xl text-sm transition text-center">
+        ✅ Simulasi Pembayaran Berhasil
+    </a>
+</div>
+@endif
+
             <a href="{{ route('beranda') }}" class="text-xs text-gray-400 hover:text-gray-600">
                 Batalkan & kembali ke beranda
             </a>

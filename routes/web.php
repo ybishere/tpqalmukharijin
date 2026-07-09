@@ -49,6 +49,12 @@ Route::post('/donasi/webhook', [App\Http\Controllers\DonasiPublikController::cla
 Route::get('/donasi/status/{id}', [App\Http\Controllers\DonasiPublikController::class, 'status'])
     ->name('donasi.status');
 
+// Simulasi pembayaran sukses (hanya untuk testing lokal)
+if (app()->environment('local')) {
+    Route::get('/donasi/{id}/simulasi-sukses', [App\Http\Controllers\DonasiPublikController::class, 'simulasiSukses'])
+        ->name('donasi.simulasi');
+}
+
 // Landing page donasi — sebelum wildcard
 Route::get('/donasi', function () {
     $programs     = \App\Models\Program::where('status', 'aktif')->get();
@@ -57,6 +63,12 @@ Route::get('/donasi', function () {
     $totalTarget  = \App\Models\Program::where('status', 'aktif')->sum('target_dana');
     return view('donasi.landing', compact('programs', 'totalDonasi', 'totalDonatur', 'totalTarget'));
 })->name('donasi.landing');
+
+// Infaq Kamisan
+Route::get('/infaq', function () {
+    $profil = \App\Models\Profile::first();
+    return view('infaq.index', compact('profil'));
+})->name('infaq.index');
 
 // Form donasi — wildcard dengan constraint angka saja
 Route::get('/donasi/{program_id}', [App\Http\Controllers\DonasiPublikController::class, 'form'])

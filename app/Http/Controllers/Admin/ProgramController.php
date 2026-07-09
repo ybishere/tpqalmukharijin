@@ -25,6 +25,8 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'nama_program' => 'required|string|max:200',
             'deskripsi'    => 'required|string',
+            'alasan_donasi'=> 'nullable|string',
+            'deadline'     => 'nullable|date',
             'target_dana'  => 'required|numeric|min:0',
             'status'       => 'required|in:aktif,selesai',
             'foto'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -63,6 +65,8 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'nama_program' => 'required|string|max:200',
             'deskripsi'    => 'required|string',
+            'alasan_donasi'=> 'nullable|string',
+            'deadline'     => 'nullable|date',
             'target_dana'  => 'required|numeric|min:0',
             'status'       => 'required|in:aktif,selesai',
             'foto'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',

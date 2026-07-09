@@ -57,18 +57,21 @@
                 </h2>
                 <div class="prose prose-stone max-w-none">
                     <p class="text-stone-600 leading-relaxed text-base">
-                        {{ $profil->sejarah ?? 'TPQ Al-Mukharijin didirikan pada tahun 1995 oleh KH. Ahmad Syafi\'i bersama tokoh-tokoh masyarakat Desa Kreman yang memiliki kepedulian tinggi terhadap pendidikan Al-Quran generasi muda.' }}
+                        {{ $profil->sejarah ?? 
+                        'TPQ Al-Mukharijin didirikan pada tahun 1991 oleh Abah Farikhin yang memiliki kepedulian tinggi terhadap pendidikan Al-Quran generasi muda.' 
+                        }}
                     </p>
                 </div>
 
                 {{-- Timeline singkat --}}
                 <div class="mt-10 space-y-5">
                     @foreach([
-                        ['1995', 'Pendirian TPQ Al-Mukharijin oleh KH. Ahmad Syafi\'i'],
+                        ['1991', 'Pendirian TPQ Al-Mukharijin oleh Abah Farikhin'],
                         ['2000', 'Pembangunan gedung TPQ pertama dengan 3 ruang belajar'],
-                        ['2008', 'KH. Ahmad Syafi\'i wafat, estafet dilanjutkan putranya'],
-                        ['2015', 'Renovasi dan perluasan gedung TPQ'],
-                        ['2024', 'Digitalisasi sistem administrasi TPQ'],
+                        ['2015', 'Umi Siti Sulasih wafat, perjuangan pengabdian tetap dilanjutkan'],
+                        ['2024', 'Renovasi dan perluasan gedung TPQ'],
+                        ['2025', 'Abah Farikhin wafat, estafet dilanjutkan oleh Aa Fuad'],
+                        ['2026', 'Digitalisasi sistem informasi TPQ'],
                     ] as [$tahun, $keterangan])
                     <div class="flex gap-4 fade-up">
                         <div class="shrink-0 w-14 text-right">
@@ -184,8 +187,8 @@
             @foreach([
                 [
                     'icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
-                    'judul' => 'Pembelajaran Iqro & Jilid',
-                    'desc'  => 'Program dasar membaca Al-Quran menggunakan metode Iqro dan Jilid secara bertahap dari huruf hijaiyah hingga mampu membaca Al-Quran dengan lancar.',
+                    'judul' => 'Pembelajaran Jilid',
+                    'desc'  => 'Program dasar membaca Al-Quran menggunakan metode Tilawati secara bertahap dari huruf hijaiyah hingga mampu membaca Al-Quran dengan lancar.',
                     'color' => 'emerald',
                 ],
                 [
@@ -255,9 +258,9 @@
 
                 <div class="space-y-5">
                     @foreach([
-                        ['icon'=>'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z', 'label'=>'Alamat', 'value'=> $profil->alamat ?? 'Jl. Masjid Al-Mukharijin No. 12, Desa Kreman, Kec. Adiwerna, Kab. Tegal, Jawa Tengah 52194'],
-                        ['icon'=>'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z', 'label'=>'Telepon / WhatsApp', 'value'=> $profil->no_telp ?? '08123456789'],
-                        ['icon'=>'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'label'=>'Email', 'value'=> $profil->email ?? 'tpqalmukharijin@gmail.com'],
+                        ['icon'=>'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z', 'label'=>'Alamat', 'value'=> $profil->alamat ?? 'Gang TPQ Al-Mukharijin, Desa Kreman, Kec. Warureja, Kab. Tegal, Jawa Tengah 52183'],
+                        ['icon'=>'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z', 'label'=>'Telepon / WhatsApp', 'value'=> $profil->no_telp ?? '085643802541'],
+                        ['icon'=>'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'label'=>'Email', 'value'=> $profil->email ?? 'almukharijin@gmail.com'],
                         ['icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'label'=>'Jam Belajar', 'value'=>'Senin – Jumat: 15.30 – 17.30 WIB'],
                     ] as $info)
                     <div class="flex items-start gap-4">

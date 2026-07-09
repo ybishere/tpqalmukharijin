@@ -33,6 +33,28 @@
                 </div>
 
                 <div>
+    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+        Alasan Donasi
+        <span class="text-gray-400 font-normal">(opsional)</span>
+    </label>
+    <p class="text-xs text-gray-400 mb-2">Ceritakan kenapa program ini membutuhkan donasi — semakin detail semakin baik.</p>
+    <textarea name="alasan_donasi" rows="6"
+        class="w-full border {{ $errors->has('alasan_donasi') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all resize-none">{{ old('alasan_donasi', $program->alasan_donasi) }}</textarea>
+    @error('alasan_donasi') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+</div>
+
+<div>
+    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+        Deadline
+        <span class="text-gray-400 font-normal">(opsional)</span>
+    </label>
+    <p class="text-xs text-gray-400 mb-2">Batas waktu kebutuhan dana — menciptakan urgensi bagi donatur.</p>
+    <input type="date" name="deadline" value="{{ old('deadline', $program->deadline) }}"
+        class="w-full border {{ $errors->has('deadline') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all">
+    @error('deadline') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+</div>
+
+                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Target Dana (Rp) <span class="text-red-500">*</span></label>
                     <input type="number" name="target_dana" value="{{ old('target_dana', $program->target_dana) }}"
                         class="w-full border {{ $errors->has('target_dana') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all">

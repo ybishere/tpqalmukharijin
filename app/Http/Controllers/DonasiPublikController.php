@@ -36,6 +36,7 @@ class DonasiPublikController extends Controller
 
         $validated = $request->validate([
             'nama_donatur' => 'nullable|string|max:100',
+            'no_wa_donatur' => 'nullable|string|max:20',
             'jumlah'       => 'required|numeric|min:1000',
             'catatan'      => 'nullable|string|max:500',
         ], [
@@ -45,7 +46,8 @@ class DonasiPublikController extends Controller
 
         $donasi = Donasi::create([
             'program_id'   => $program->id_program,
-            'nama_donatur' => $validated['nama_donatur'] ?? 'Anonim',
+            'nama_donatur' => $validated['nama_donatur'] ?? 'Hamba Allah',
+            'no_wa_donatur' => $validated['no_wa_donatur'] ?? null,
             'jumlah'       => $validated['jumlah'],
             'metode'       => 'qris',
             'status_bayar' => 'menunggu',
@@ -149,6 +151,23 @@ class DonasiPublikController extends Controller
             } catch (\Exception $e) {
                 Log::error('Gagal kirim WA notifikasi: ' . $e->getMessage());
             }
+
+            // Notif WA donatur
+try {
+    if (!empty($donasi->no_wa_donatur)) {
+        $noDonatur = '62' . ltrim(preg_replace('/[^0-9]/', '', $donasi->no_wa_donatur), '0');
+        $pesanDonatur = "Assalamualaikum, *" . ($donasi->nama_donatur ?? 'Donatur') . "*! 🌿\n\n"
+            . "Jazakallah khairan atas donasi Anda ke *TPQ Al-Mukharijin*.\n\n"
+            . "📋 *Program:* " . ($donasi->program->nama_program ?? '-') . "\n"
+            . "💰 *Jumlah:* Rp " . number_format($donasi->jumlah, 0, ',', '.') . "\n"
+            . "🔖 *No. Referensi:* #" . str_pad($donasi->id_donasi, 6, '0', STR_PAD_LEFT) . "\n\n"
+            . "Semoga menjadi amal jariyah yang berkah. Aamiin 🤲";
+
+        \App\Services\WhatsAppService::send($noDonatur, $pesanDonatur);
+    }
+} catch (\Exception $e) {
+    Log::error('Gagal kirim WA donatur: ' . $e->getMessage());
+}
         }
     } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
         $donasi->update(['status_bayar' => 'gagal']);
@@ -158,4 +177,60 @@ class DonasiPublikController extends Controller
 
     return response()->json(['message' => 'OK']);
 }
+
+public function simulasiSukses($id)
+{
+    if (!app()->environment('local')) {
+        abort(404);
+    }
+
+    $donasi = Donasi::with('program')->findOrFail($id);
+
+    if ($donasi->status_bayar !== 'sukses') {
+        $donasi->update([
+            'status_bayar' => 'sukses',
+            'metode'       => 'qris',
+        ]);
+
+        $donasi->program->increment('dana_terkumpul', $donasi->jumlah);
+
+        // Notif WA admin
+        try {
+            $pesan = "🌿 *Donasi Masuk — TPQ Al-Mukharijin*\n\n"
+                . "👤 *Donatur:* " . ($donasi->nama_donatur ?? 'Anonim') . "\n"
+                . "📋 *Program:* " . ($donasi->program->nama_program ?? '-') . "\n"
+                . "💰 *Jumlah:* Rp " . number_format($donasi->jumlah, 0, ',', '.') . "\n"
+                . "💳 *Metode:* SIMULASI\n"
+                . "🕐 *Waktu:* " . now()->translatedFormat('d F Y, H:i') . " WIB\n\n"
+                . "Jazakumullah khairan atas kepercayaannya. 🤲";
+
+            \App\Services\WhatsAppService::send(
+                config('services.fonnte.admin_wa'),
+                $pesan
+            );
+        } catch (\Exception $e) {
+            Log::error('Gagal kirim WA notifikasi simulasi: ' . $e->getMessage());
+        }
+
+        // Notif WA donatur
+try {
+    if (!empty($donasi->no_wa_donatur)) {
+        $noDonatur = '62' . ltrim(preg_replace('/[^0-9]/', '', $donasi->no_wa_donatur), '0');
+        $pesanDonatur = "Assalamualaikum, *" . ($donasi->nama_donatur ?? 'Donatur') . "*! 🌿\n\n"
+            . "Jazakallah khairan atas donasi Anda ke *TPQ Al-Mukharijin*.\n\n"
+            . "📋 *Program:* " . ($donasi->program->nama_program ?? '-') . "\n"
+            . "💰 *Jumlah:* Rp " . number_format($donasi->jumlah, 0, ',', '.') . "\n"
+            . "🔖 *No. Referensi:* #" . str_pad($donasi->id_donasi, 6, '0', STR_PAD_LEFT) . "\n\n"
+            . "Semoga menjadi amal jariyah yang berkah. Aamiin 🤲";
+
+        \App\Services\WhatsAppService::send($noDonatur, $pesanDonatur);
+    }
+} catch (\Exception $e) {
+    Log::error('Gagal kirim WA donatur: ' . $e->getMessage());
+}
+    }
+
+    return redirect()->route('donasi.status', $donasi->id_donasi);
+}
+
 }

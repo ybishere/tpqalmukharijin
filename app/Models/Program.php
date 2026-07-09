@@ -9,6 +9,8 @@ class Program extends Model
     protected $fillable = [
         'nama_program',
         'deskripsi',
+        'alasan_donasi',
+        'deadline',
         'target_dana',
         'dana_terkumpul',
         'foto',
