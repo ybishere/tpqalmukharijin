@@ -13,4 +13,4 @@ COPY . .
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
 EXPOSE 8080
-CMD php artisan migrate --force && php artisan storage:link && php artisan config:cache && php artisan route:cache && php -S 0.0.0.0:$PORT -t public
+CMD php artisan migrate --force && php artisan storage:link && php artisan optimize && php -S 0.0.0.0:$PORT -t public/
