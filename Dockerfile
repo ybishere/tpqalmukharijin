@@ -4,7 +4,9 @@ RUN apt-get update && apt-get install -y \
     git curl zip unzip libpng-dev libxml2-dev libzip-dev \
     libonig-dev libicu-dev \
     && docker-php-ext-install gd pdo pdo_mysql mbstring xml zip bcmath intl \
-    && a2enmod rewrite
+    && a2enmod rewrite \
+    && a2dismod mpm_event \
+    && a2enmod mpm_prefork
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -23,4 +25,4 @@ RUN echo '<Directory /var/www/html/public>\n\
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan migrate --force && php artisan storage:link && php artisan optimize && apache2-foreground"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan storage:link --force && php artisan optimize && apache2-foreground"]
