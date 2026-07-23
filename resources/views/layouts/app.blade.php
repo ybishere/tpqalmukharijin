@@ -3,8 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'TPQ Al-Mukharijin')</title>
-    <meta name="description" content="@yield('meta_description', 'TPQ Al-Mukharijin Desa Kreman — Mendidik generasi Qurani yang berakhlak mulia.')">
+    
+    {{-- ═══ SEO META TAGS ═══ --}}
+    <title>@yield('title', 'TPQ Al-Mukharijin – Desa Kreman, Tegal')</title>
+    <meta name="description" content="@yield('meta_description', 'TPQ Al-Mukharijin Desa Kreman, Kecamatan Warureja, Kabupaten Tegal — Mendidik generasi Qurani yang berakhlak mulia sejak 1991.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'TPQ Al-Mukharijin, TPQ Desa Kreman, TPQ Warureja, TPQ Tegal, belajar Al-Quran Tegal, pendidikan Al-Quran')">
+    <meta name="author" content="TPQ Al-Mukharijin">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="TPQ Al-Mukharijin">
+    <meta property="og:title" content="@yield('og_title', 'TPQ Al-Mukharijin – Desa Kreman, Tegal')">
+    <meta property="og:description" content="@yield('og_description', 'TPQ Al-Mukharijin Desa Kreman — Mendidik generasi Qurani yang berakhlak mulia sejak 1991.')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="@yield('og_image', asset('images/gedung-tpq.jpg'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="id_ID">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('og_title', 'TPQ Al-Mukharijin – Desa Kreman, Tegal')">
+    <meta name="twitter:description" content="@yield('og_description', 'TPQ Al-Mukharijin Desa Kreman — Mendidik generasi Qurani yang berakhlak mulia sejak 1991.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/gedung-tpq.jpg'))">
+
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+    {{-- ═══ END SEO ═══ --}}
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @stack('styles')
@@ -22,10 +51,8 @@
 
         {{-- Logo --}}
         <a href="{{ route('beranda') }}" class="flex items-center gap-3 group">
-            <div class="w-9 h-9 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center group-hover:bg-white/25 transition-colors">
-                <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                </svg>
+            <div class="w-9 h-9 rounded-2xl overflow-hidden bg-white/15 border border-white/25 flex items-center justify-center group-hover:bg-white/25 transition-colors">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo TPQ Al-Mukharijin" class="w-full h-full object-contain p-0.5">
             </div>
             <div class="leading-tight">
                 <p class="font-arabic text-white font-bold text-[15px]">TPQ Al-Mukharijin</p>
@@ -95,16 +122,17 @@
                 {{ request()->routeIs('alumni.*') ? 'text-amber-300 bg-white/10' : 'text-white/75 hover:text-white hover:bg-white/8' }}">
                 Alumni
             </a>
+
             {{-- Dropdown Infaq & Donasi --}}
-<div class="relative" x-data="{ open: false }"
-    @mouseenter="open = true" @mouseleave="open = false">
-    <button class="px-4 py-2 rounded-xl text-[13px] font-medium transition-all flex items-center gap-1.5
-        {{ request()->routeIs('donasi.*') || request()->routeIs('infaq.*') ? 'text-amber-300 bg-white/10' : 'text-white/75 hover:text-white hover:bg-white/8' }}">
-        Infaq & Donasi
-        <svg class="w-3 h-3 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-        </svg>
-    </button>
+    <div class="relative" x-data="{ open: false }"
+        @mouseenter="open = true" @mouseleave="open = false">
+        <button class="px-4 py-2 rounded-xl text-[13px] font-medium transition-all flex items-center gap-1.5
+            {{ request()->routeIs('donasi.*') || request()->routeIs('infaq.*') ? 'text-amber-300 bg-white/10' : 'text-white/75 hover:text-white hover:bg-white/8' }}">
+            Infaq & Donasi
+            <svg class="w-3 h-3 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+            </svg>
+        </button>
     <div x-show="open"
         x-transition:enter="transition ease-out duration-150"
         x-transition:enter-start="opacity-0 translate-y-1"
@@ -178,10 +206,8 @@
             {{-- Brand --}}
             <div class="col-span-2 lg:col-span-4">
                 <div class="flex items-center gap-3 mb-5">
-                    <div class="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
+                    <div class="w-10 h-10 rounded-2xl overflow-hidden bg-white/10 border border-white/15 flex items-center justify-center">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo TPQ Al-Mukharijin" class="w-full h-full object-contain p-0.5">
                     </div>
                     <div>
                         <p class="font-arabic text-white font-bold text-base">TPQ Al-Mukharijin</p>

@@ -33,7 +33,6 @@
                     Mereka yang telah menyelesaikan pendidikan Al-Quran di TPQ Al-Mukharijin
                     dan kini menjadi generasi Qurani yang bermanfaat bagi masyarakat.
                 </p>
-                {{-- Stats --}}
                 <div class="flex gap-8">
                     <div>
                         <p class="text-3xl font-extrabold text-white">{{ $totalAlumni }}+</p>
@@ -52,7 +51,6 @@
                 </div>
             </div>
 
-            {{-- Kanan: Quote islami --}}
             <div class="hidden lg:block">
                 <div class="relative p-8 rounded-3xl"
                     style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
@@ -74,24 +72,9 @@
 </section>
 
 {{-- ═══ FILTER & SEARCH ═══ --}}
-<section class="py-16 bg-[#fafaf9]"
-    x-data="{
-        search: '',
-        angkatan: 'semua',
-        get filtered() {
-            return this.rows.filter(r => {
-                const matchSearch = this.search === '' ||
-                    r.nama.toLowerCase().includes(this.search.toLowerCase());
-                const matchAngkatan = this.angkatan === 'semua' ||
-                    String(r.tahun) === this.angkatan;
-                return matchSearch && matchAngkatan;
-            });
-        },
-        rows: @json($alumni->map(fn($a) => ['nama' => $a->nama, 'tahun' => $a->tahun_angkatan, 'keterangan' => $a->keterangan ?? ''])),
-    }">
+<section class="py-16 bg-[#fafaf9]" x-data="alumniData()">
     <div class="max-w-6xl mx-auto px-6">
 
-        {{-- Header + Filter --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-10">
             <div>
                 <span class="section-label mb-2 block">Daftar Lengkap</span>
@@ -99,7 +82,6 @@
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3">
-                {{-- Search --}}
                 <div class="relative">
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +91,6 @@
                         class="pl-9 pr-4 py-2.5 text-sm border border-stone-200 rounded-xl bg-white text-stone-700 placeholder-stone-400 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all w-full sm:w-56">
                 </div>
 
-                {{-- Filter angkatan --}}
                 <select x-model="angkatan"
                     class="px-4 py-2.5 text-sm border border-stone-200 rounded-xl bg-white text-stone-700 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all">
                     <option value="semua">Semua Angkatan</option>
@@ -120,7 +101,6 @@
             </div>
         </div>
 
-        {{-- Hasil filter info --}}
         <p class="text-stone-400 text-sm mb-6">
             Menampilkan <span class="font-semibold text-stone-700" x-text="filtered.length"></span> alumni
             <span x-show="search !== ''" class="text-emerald-600">
@@ -128,12 +108,9 @@
             </span>
         </p>
 
-        {{-- Grid alumni --}}
         <div x-show="filtered.length > 0">
-            {{-- Group by angkatan --}}
             <template x-for="thn in [...new Set(filtered.map(r => r.tahun))].sort((a,b) => b-a)" :key="thn">
                 <div class="mb-12">
-                    {{-- Label angkatan --}}
                     <div class="flex items-center gap-4 mb-6">
                         <div class="shrink-0 px-4 py-1.5 rounded-full text-xs font-bold text-white"
                             style="background:linear-gradient(135deg,#064e3b,#065f46);">
@@ -145,22 +122,20 @@
                         </span>
                     </div>
 
-                    {{-- Cards --}}
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                        <template x-for="(alumni, i) in filtered.filter(r => r.tahun === thn)" :key="i">
-                            <div class="fade-up bg-white rounded-2xl border border-stone-100 p-5 text-center hover:border-emerald-200 hover:shadow-md transition-all group">
-                                {{-- Avatar inisial --}}
+                        <template x-for="(row, i) in filtered.filter(r => r.tahun === thn)" :key="i">
+                            <div class="bg-white rounded-2xl border border-stone-100 p-5 text-center hover:border-emerald-200 hover:shadow-md transition-all group">
                                 <div class="w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center text-lg font-extrabold text-white"
                                     style="background:linear-gradient(135deg,#064e3b,#10b981);">
-                                    <span x-text="alumni.nama.charAt(0).toUpperCase()"></span>
+                                    <span x-text="row.nama.charAt(0).toUpperCase()"></span>
                                 </div>
                                 <p class="font-bold text-stone-900 text-sm leading-snug line-clamp-2 group-hover:text-emerald-800 transition-colors"
-                                    x-text="alumni.nama"></p>
+                                    x-text="row.nama"></p>
                                 <p class="text-stone-400 text-[10px] mt-1.5 font-medium"
-                                    x-text="'Angkatan ' + alumni.tahun"></p>
-                                <template x-if="alumni.keterangan">
+                                    x-text="'Angkatan ' + row.tahun"></p>
+                                <template x-if="row.keterangan">
                                     <p class="text-stone-400 text-[10px] mt-1 line-clamp-2 leading-relaxed"
-                                        x-text="alumni.keterangan"></p>
+                                        x-text="row.keterangan"></p>
                                 </template>
                             </div>
                         </template>
@@ -169,7 +144,6 @@
             </template>
         </div>
 
-        {{-- Empty state --}}
         <div x-show="filtered.length === 0" class="text-center py-20 border-2 border-dashed border-stone-200 rounded-3xl">
             <svg class="w-12 h-12 text-stone-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -218,6 +192,27 @@
 
 @push('scripts')
 <script>
+function alumniData() {
+    return {
+        search: '',
+        angkatan: 'semua',
+        rows: @json($alumni->map(fn($a) => [
+            'nama' => $a->nama,
+            'tahun' => (int) $a->tahun_angkatan,
+            'keterangan' => $a->keterangan ?? ''
+        ])),
+        get filtered() {
+            return this.rows.filter(r => {
+                const matchSearch = this.search === '' ||
+                    r.nama.toLowerCase().includes(this.search.toLowerCase());
+                const matchAngkatan = this.angkatan === 'semua' ||
+                    String(r.tahun) === this.angkatan;
+                return matchSearch && matchAngkatan;
+            });
+        }
+    }
+}
+
 const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }

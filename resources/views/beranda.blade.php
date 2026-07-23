@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Beranda – TPQ Al-Mukharijin')
 
+@section('meta_description', 'TPQ Al-Mukharijin Desa Kreman, Kec. Warureja, Kab. Tegal. Lembaga pendidikan Al-Quran yang mendidik generasi Qurani sejak 1991.')
+@section('og_title', 'TPQ Al-Mukharijin – Tempat Belajar Al-Quran Desa Kreman')
+@section('og_description', 'Mendidik generasi Qurani yang berakhlak mulia, cerdas, dan bermanfaat bagi agama dan masyarakat.')
+
 @section('content')
 
 {{-- ═══ HERO ═══ --}}
@@ -63,66 +67,69 @@
             </div>
 
             {{-- Kanan: Slider --}}
-            <div class="hero-animate relative hidden lg:block"
-                x-data="slider()" x-init="init()">
-                <div class="relative overflow-hidden rounded-3xl"
-                    style="aspect-ratio:4/3;box-shadow:0 40px 80px rgba(0,0,0,0.5);">
+            {{-- Kanan: Slider --}}
+<div class="hero-animate relative hidden lg:block"
+    x-data="slider()" x-init="init()">
+    <div class="relative overflow-hidden rounded-3xl"
+        style="aspect-ratio:4/3;box-shadow:0 40px 80px rgba(0,0,0,0.5);">
 
-                    <div class="flex h-full transition-transform duration-700 ease-in-out"
-                        :style="`transform:translateX(-${current*100}%);width:${slides.length*100}%`">
-                        @php
-                        $slideItems = [
-                            ['bg'=>'from-emerald-900 to-emerald-700','icon'=>'📖','label'=>'Kegiatan Belajar'],
-                            ['bg'=>'from-amber-900 to-amber-700','icon'=>'🕌','label'=>'Kegiatan Ibadah'],
-                            ['bg'=>'from-teal-900 to-teal-700','icon'=>'🎓','label'=>'Wisuda Santri'],
-                            ['bg'=>'from-green-900 to-green-700','icon'=>'🌙','label'=>'Kegiatan Ramadhan'],
-                        ];
-                        @endphp
-                        @foreach($slideItems as $slide)
-                        <div class="h-full relative flex-shrink-0" style="width:{{ 100/count($slideItems) }}%">
-                            <div class="absolute inset-0 bg-gradient-to-br {{ $slide['bg'] }} flex flex-col items-center justify-center gap-4">
-                                <div class="pattern-bg absolute inset-0 opacity-20"></div>
-                                <span class="text-6xl relative z-10">{{ $slide['icon'] }}</span>
-                                <p class="text-white/70 text-sm font-medium relative z-10">{{ $slide['label'] }}</p>
-                                <p class="text-white/30 text-xs relative z-10">[ Foto akan ditambahkan ]</p>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
+        @if($kegiatanSlider->count())
+        <div class="flex h-full transition-transform duration-700 ease-in-out"
+            :style="`transform:translateX(-${current*100}%);width:${slides.length*100}%`">
+            @foreach($kegiatanSlider as $slide)
+            <div class="h-full relative flex-shrink-0" style="width:{{ 100 / $kegiatanSlider->count() }}%">
+                <img src="{{ Storage::url($slide->thumbnail) }}"
+                    alt="{{ $slide->judul }}"
+                    class="absolute inset-0 w-full h-full object-cover">
+            </div>
+            @endforeach
+        </div>
+        @else
+        {{-- Fallback kalau belum ada foto sama sekali --}}
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-900 to-emerald-700 flex flex-col items-center justify-center gap-3">
+            <div class="pattern-bg absolute inset-0 opacity-20"></div>
+            <svg class="w-16 h-16 text-white/20 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"/>
+            </svg>
+            <p class="text-white/30 text-sm relative z-10">Foto kegiatan belum tersedia</p>
+        </div>
+        @endif
 
-                    <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%)"></div>
+        <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%)"></div>
 
-                    {{-- Info kegiatan di bawah slide --}}
-                    <div class="absolute bottom-0 left-0 right-0 p-6">
-                        <p class="text-white/50 text-[10px] uppercase tracking-widest font-semibold mb-1">Kegiatan</p>
-                        <p class="text-white font-bold text-base" x-text="labels[current]"></p>
-                        <div class="flex items-center justify-between mt-3">
-                            <div class="flex gap-1.5">
-                                <template x-for="(s,i) in slides" :key="i">
-                                    <button @click="goTo(i)"
-                                        class="rounded-full transition-all duration-300"
-                                        :class="i===current?'w-5 h-2 bg-white':'w-2 h-2 bg-white/40 hover:bg-white/70'">
-                                    </button>
-                                </template>
-                            </div>
-                            <div class="flex gap-2">
-                                <button @click="prev()" class="w-8 h-8 rounded-full flex items-center justify-center transition-all"
-                                    style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);"
-                                    onmouseenter="this.style.background='rgba(255,255,255,0.25)'"
-                                    onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
-                                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                                </button>
-                                <button @click="next()" class="w-8 h-8 rounded-full flex items-center justify-center transition-all"
-                                    style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);"
-                                    onmouseenter="this.style.background='rgba(255,255,255,0.25)'"
-                                    onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
-                                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        {{-- Info kegiatan di bawah slide --}}
+        @if($kegiatanSlider->count())
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+            <p class="text-white/50 text-[10px] uppercase tracking-widest font-semibold mb-1">Kegiatan</p>
+            <p class="text-white font-bold text-base" x-text="labels[current]"></p>
+            <div class="flex items-center justify-between mt-3">
+                <div class="flex gap-1.5">
+                    <template x-for="(s,i) in slides" :key="i">
+                        <button @click="goTo(i)"
+                            class="rounded-full transition-all duration-300"
+                            :class="i===current?'w-5 h-2 bg-white':'w-2 h-2 bg-white/40 hover:bg-white/70'">
+                        </button>
+                    </template>
+                </div>
+                <div class="flex gap-2">
+                    <button @click="prev()" class="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+                        style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);"
+                        onmouseenter="this.style.background='rgba(255,255,255,0.25)'"
+                        onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button @click="next()" class="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+                        style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);"
+                        onmouseenter="this.style.background='rgba(255,255,255,0.25)'"
+                        onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
                 </div>
             </div>
+        </div>
+        @endif
+    </div>
+</div>
         </div>
     </div>
 
@@ -136,14 +143,10 @@
 
 {{-- ═══ FOTO MADRASAH ═══ --}}
 <section class="relative h-[500px] md:h-[580px] overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-emerald-950 via-emerald-900 to-stone-900">
-        <div class="pattern-bg absolute inset-0 opacity-30"></div>
-        <div class="absolute inset-0 flex items-center justify-center opacity-10">
-            <svg class="w-48 h-48 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M9 22V12h6v10"/>
-            </svg>
-        </div>
+    <div class="absolute inset-0">
+    <img src="{{ asset('images/gedung-tpq.jpg') }}"
+        alt="TPQ Al-Mukharijin"
+        class="w-full h-full object-cover">
     </div>
     <div class="absolute inset-0" style="background:linear-gradient(to right,rgba(1,26,16,0.92) 0%,rgba(1,26,16,0.6) 55%,rgba(1,26,16,0.3) 100%)"></div>
     <div class="relative h-full max-w-6xl mx-auto px-6 flex items-center">
@@ -518,13 +521,13 @@
 function slider() {
     return {
         current: 0,
-        slides: [0,1,2,3],
-        labels: ['Kegiatan Belajar','Kegiatan Ibadah','Wisuda Santri','Kegiatan Ramadhan'],
+        slides: @json($kegiatanSlider->keys()->toArray()),
+        labels: @json($kegiatanSlider->pluck('judul')->toArray()),
         timer: null,
-        init() { this.autoPlay(); },
+        init() { if (this.slides.length > 1) this.autoPlay(); },
         autoPlay() { this.timer = setInterval(() => this.next(), 4000); },
-        next() { this.current = (this.current+1) % this.slides.length; },
-        prev() { this.current = (this.current-1+this.slides.length) % this.slides.length; },
+        next() { this.current = (this.current + 1) % this.slides.length; },
+        prev() { this.current = (this.current - 1 + this.slides.length) % this.slides.length; },
         goTo(i) { this.current = i; clearInterval(this.timer); this.autoPlay(); }
     }
 }

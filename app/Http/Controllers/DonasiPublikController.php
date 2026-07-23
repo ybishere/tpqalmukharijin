@@ -95,7 +95,7 @@ class DonasiPublikController extends Controller
     }
 
     public function webhook(Request $request)
-{
+    {
     $serverKey   = config('midtrans.server_key');
     $orderId     = $request->order_id;
     $statusCode  = $request->status_code;
@@ -152,10 +152,18 @@ class DonasiPublikController extends Controller
                 Log::error('Gagal kirim WA notifikasi: ' . $e->getMessage());
             }
 
-            // Notif WA donatur
-try {
+                        // Notif WA donatur
+            try {
     if (!empty($donasi->no_wa_donatur)) {
-        $noDonatur = '62' . ltrim(preg_replace('/[^0-9]/', '', $donasi->no_wa_donatur), '0');
+        $raw = preg_replace('/[^0-9]/', '', $donasi->no_wa_donatur);
+        // Hapus leading 0 atau 62, lalu tambah 62
+            if (str_starts_with($raw, '62')) {
+                $noDonatur = $raw;
+            } elseif (str_starts_with($raw, '0')) {
+                $noDonatur = '62' . substr($raw, 1);
+            } else {
+                $noDonatur = '62' . $raw;
+            }
         $pesanDonatur = "Assalamualaikum, *" . ($donasi->nama_donatur ?? 'Donatur') . "*! 🌿\n\n"
             . "Jazakallah khairan atas donasi Anda ke *TPQ Al-Mukharijin*.\n\n"
             . "📋 *Program:* " . ($donasi->program->nama_program ?? '-') . "\n"
@@ -165,9 +173,9 @@ try {
 
         \App\Services\WhatsAppService::send($noDonatur, $pesanDonatur);
     }
-} catch (\Exception $e) {
-    Log::error('Gagal kirim WA donatur: ' . $e->getMessage());
-}
+            } catch (\Exception $e) {
+                Log::error('Gagal kirim WA donatur: ' . $e->getMessage());
+            }
         }
     } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
         $donasi->update(['status_bayar' => 'gagal']);
@@ -178,8 +186,8 @@ try {
     return response()->json(['message' => 'OK']);
 }
 
-public function simulasiSukses($id)
-{
+    public function simulasiSukses($id)
+    {
     if (!app()->environment('local')) {
         abort(404);
     }
@@ -212,10 +220,27 @@ public function simulasiSukses($id)
             Log::error('Gagal kirim WA notifikasi simulasi: ' . $e->getMessage());
         }
 
+        // Email notifikasi admin
+        try {
+            $freshDonasi = $donasi->fresh()->load('program');
+            Mail::to(config('mail.admin_email', 'admin@tpq-almukharijin.id'))
+                ->send(new \App\Mail\DonasiMasuk($freshDonasi));
+        } catch (\Exception $e) {
+            Log::error('Gagal kirim email simulasi: ' . $e->getMessage());
+        }
+
         // Notif WA donatur
-try {
+        try {
     if (!empty($donasi->no_wa_donatur)) {
-        $noDonatur = '62' . ltrim(preg_replace('/[^0-9]/', '', $donasi->no_wa_donatur), '0');
+        $raw = preg_replace('/[^0-9]/', '', $donasi->no_wa_donatur);
+        // Hapus leading 0 atau 62, lalu tambah 62
+            if (str_starts_with($raw, '62')) {
+                $noDonatur = $raw;
+            } elseif (str_starts_with($raw, '0')) {
+                $noDonatur = '62' . substr($raw, 1);
+            } else {
+                $noDonatur = '62' . $raw;
+            }
         $pesanDonatur = "Assalamualaikum, *" . ($donasi->nama_donatur ?? 'Donatur') . "*! 🌿\n\n"
             . "Jazakallah khairan atas donasi Anda ke *TPQ Al-Mukharijin*.\n\n"
             . "📋 *Program:* " . ($donasi->program->nama_program ?? '-') . "\n"

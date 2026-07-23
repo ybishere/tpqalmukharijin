@@ -24,13 +24,11 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul'       => 'required|string|max:255',
-            'deskripsi'   => 'required|string',
-            'tanggal'     => 'required|date',
-            'status'      => 'required|in:akan_datang,berlangsung,selesai',
-            'thumbnail'   => 'nullable|image|max:2048',
-            'foto.*'      => 'nullable|image|max:2048',
-            'keterangan.*'=> 'nullable|string|max:255',
+            'judul'        => 'required|string|max:255',
+            'deskripsi'    => 'required|string',
+            'tanggal'      => 'required|date',
+            'status'       => 'required|in:akan_datang,berlangsung,selesai',
+            'keterangan.*' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('thumbnail')) {
@@ -61,52 +59,48 @@ class ActivityController extends Controller
     }
 
     public function update(Request $request, Activity $kegiatan)
-    {
-        $validated = $request->validate([
-            'judul'       => 'required|string|max:255',
-            'deskripsi'   => 'required|string',
-            'tanggal'     => 'required|date',
-            'status'      => 'required|in:akan_datang,berlangsung,selesai',
-            'thumbnail'   => 'nullable|image|max:2048',
-            'foto.*'      => 'nullable|image|max:2048',
-            'keterangan.*'=> 'nullable|string|max:255',
-        ]);
+{
+    $validated = $request->validate([
+        'judul'        => 'required|string|max:255',
+        'deskripsi'    => 'required|string',
+        'tanggal'      => 'required|date',
+        'status'       => 'required|in:akan_datang,berlangsung,selesai',
+        'keterangan.*' => 'nullable|string|max:255',
+    ]);
 
-        if ($request->hasFile('thumbnail')) {
-            if ($kegiatan->thumbnail) {
-                Storage::disk('public')->delete($kegiatan->thumbnail);
-            }
-            $validated['thumbnail'] = $request->file('thumbnail')->store('kegiatan', 'public');
+    if ($request->hasFile('thumbnail')) {
+        if ($kegiatan->thumbnail) {
+            Storage::disk('public')->delete($kegiatan->thumbnail);
         }
-
-        $kegiatan->update($validated);
-
-        // Hapus foto yang dicentang
-        if ($request->hapus_foto) {
-            foreach ($request->hapus_foto as $photoId) {
-                $photo = ActivityPhoto::find($photoId);
-                if ($photo) {
-                    Storage::disk('public')->delete($photo->foto);
-                    $photo->delete();
-                }
-            }
-        }
-
-        // Upload foto baru
-        if ($request->hasFile('foto')) {
-            foreach ($request->file('foto') as $i => $file) {
-                $path = $file->store('kegiatan/foto', 'public');
-                ActivityPhoto::create([
-                    'activity_id' => $kegiatan->id,
-                    'foto'        => $path,
-                    'keterangan'  => $request->keterangan[$i] ?? null,
-                ]);
-            }
-        }
-
-        return redirect()->route('admin.kegiatan.index')
-            ->with('success', 'Kegiatan berhasil diperbarui.');
+        $validated['thumbnail'] = $request->file('thumbnail')->store('kegiatan', 'public');
     }
+
+    $kegiatan->update($validated);
+
+    if ($request->hapus_foto) {
+        foreach ($request->hapus_foto as $photoId) {
+            $photo = ActivityPhoto::find($photoId);
+            if ($photo) {
+                Storage::disk('public')->delete($photo->foto);
+                $photo->delete();
+            }
+        }
+    }
+
+    if ($request->hasFile('foto')) {
+        foreach ($request->file('foto') as $i => $file) {
+            $path = $file->store('kegiatan/foto', 'public');
+            ActivityPhoto::create([
+                'activity_id' => $kegiatan->id,
+                'foto'        => $path,
+                'keterangan'  => $request->keterangan[$i] ?? null,
+            ]);
+        }
+    }
+
+    return redirect()->route('admin.kegiatan.index')
+        ->with('success', 'Kegiatan berhasil diperbarui.');
+}
 
     public function destroy(Activity $kegiatan)
     {

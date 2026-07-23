@@ -15,7 +15,7 @@
             <span class="text-[11px] font-semibold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">{{ $totalAngkatan }} angkatan</span>
         </div>
     </div>
-    <a href="{{ route('admin.alumni.create') }}"
+    <a href="{{ route('admin.admin.alumni.create') }}"
         class="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -48,13 +48,13 @@
                 <td class="py-3.5 text-xs text-stone-400">{{ $item->keterangan ?? '-' }}</td>
                 <td class="px-5 py-3.5">
                     <div class="flex items-center justify-end gap-2">
-                        <a href="{{ route('admin.alumni.edit', $item) }}"
+                        <a href="{{ route('admin.admin.alumni.edit', $item) }}"
                             class="w-8 h-8 rounded-lg bg-amber-50 hover:bg-amber-100 flex items-center justify-center transition-colors text-amber-600">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </a>
-                        <form method="POST" action="{{ route('admin.alumni.destroy', $item) }}"
+                        <form method="POST" action="{{ route('admin.admin.alumni.destroy', $item) }}"
                             onsubmit="return confirm('Hapus data alumni ini?')">
                             @csrf @method('DELETE')
                             <button type="submit"
@@ -78,3 +78,5 @@
 </div>
 
 @endsection
+
+

@@ -114,3 +114,5 @@ function previewFoto(input) {
 </script>
 @endpush
 @endsection
+
+

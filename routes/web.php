@@ -18,9 +18,18 @@ Route::get('/', function () {
                             ->where('tanggal', '>=', now())->orderBy('tanggal')->first();
     $programs         = \App\Models\Program::where('status', 'aktif')->take(4)->get();
     $totalTarget      = \App\Models\Program::where('status', 'aktif')->sum('target_dana');
+
+    // Khusus slider: ambil kegiatan yang ada thumbnail, max 4
+    $kegiatanSlider = \App\Models\Activity::whereNotNull('thumbnail')
+                        ->where('thumbnail', '!=', '')
+                        ->latest('tanggal')
+                        ->take(4)
+                        ->get();
+
     return view('beranda', compact(
-        'totalDonasi', 'totalSantri', 'totalPengajar', 'totalAlumni',
-        'kegiatan', 'pengumuman', 'kegiatanTerdekat', 'programs', 'totalTarget'
+    'totalDonasi', 'totalSantri', 'totalPengajar', 'totalAlumni',
+    'kegiatan', 'pengumuman', 'kegiatanTerdekat', 'programs', 'totalTarget',
+    'kegiatanSlider'
     ));
 })->name('beranda');
 
@@ -177,6 +186,7 @@ Route::get('/alumni', function () {
     ));
 })->name('alumni.index');
 
+
 // ── ROUTE ADMIN ──
 Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -215,7 +225,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->names('santri');
 
         Route::resource('/alumni', \App\Http\Controllers\Admin\AlumniController::class)
-            ->names('alumni')
+            ->names('admin.alumni')
             ->parameters(['alumni' => 'alumni']);
 
         Route::get('/profil', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('profil.edit');

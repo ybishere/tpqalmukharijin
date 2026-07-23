@@ -8,6 +8,16 @@
 @endsection
 @section('content')
 <div class="max-w-2xl">
+    @if ($errors->any())
+    <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600">
+        <ul class="list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <form method="POST" action="{{ route('admin.kegiatan.update', $kegiatan) }}" enctype="multipart/form-data">
         @csrf @method('PUT')
         @include('admin.kegiatan._form')
@@ -22,3 +32,5 @@
     </form>
 </div>
 @endsection
+
+

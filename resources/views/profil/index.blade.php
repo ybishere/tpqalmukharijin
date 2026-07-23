@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Profil TPQ – Al-Mukharijin')
 
+@section('meta_description', 'Profil TPQ Al-Mukharijin – Sejarah, visi misi, dan program unggulan lembaga pendidikan Al-Quran Desa Kreman sejak 1991.')
+@section('og_title', 'Profil TPQ Al-Mukharijin')
+@section('og_description', 'Mengenal lebih dekat TPQ Al-Mukharijin, lembaga pendidikan Al-Quran yang telah mengabdi untuk masyarakat Desa Kreman selama puluhan tahun.')
+
 @section('content')
 
 {{-- ═══ HERO ═══ --}}
@@ -91,20 +95,16 @@
                 <div class="relative">
                     {{-- Foto utama placeholder --}}
                     <div class="rounded-3xl overflow-hidden"
-                        style="aspect-ratio:4/3;background:linear-gradient(135deg,#064e3b,#065f46);box-shadow:0 40px 80px rgba(6,78,59,0.2);">
-                        <div class="pattern-bg absolute inset-0 opacity-20"></div>
-                        <div class="h-full flex flex-col items-center justify-center gap-4 relative z-10">
-                            <svg class="w-20 h-20 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                            </svg>
-                            <p class="text-white/30 text-sm">[ Foto Gedung TPQ ]</p>
-                        </div>
+                        style="aspect-ratio:4/3;box-shadow:0 40px 80px rgba(6,78,59,0.2);">
+                        <img src="{{ asset('images/gedung-tpq-full.jpg') }}"
+                            alt="Gedung TPQ Al-Mukharijin"
+                            class="w-full h-full object-cover">
                     </div>
 
                     {{-- Card mengambang --}}
                     <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-5 shadow-xl border border-stone-100" style="min-width:160px;">
                         <p class="text-stone-400 text-[10px] uppercase tracking-wide font-semibold mb-1">Berdiri Sejak</p>
-                        <p class="text-4xl font-extrabold text-emerald-800">1995</p>
+                        <p class="text-4xl font-extrabold text-emerald-800">1991</p>
                         <p class="text-stone-500 text-xs mt-1">± 30 tahun mengabdi</p>
                     </div>
                 </div>

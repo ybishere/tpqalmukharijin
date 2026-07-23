@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Donasi Program – TPQ Al-Mukharijin')
 
+@section('meta_description', 'Donasi untuk program TPQ Al-Mukharijin Desa Kreman. Bantu kami mendidik generasi Qurani yang berakhlak mulia.')
+@section('og_title', 'Donasi Program – TPQ Al-Mukharijin')
+
 @section('content')
 
 {{-- ═══ HERO ═══ --}}

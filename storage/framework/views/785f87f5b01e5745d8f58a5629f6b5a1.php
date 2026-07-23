@@ -1,6 +1,9 @@
 
 <?php $__env->startSection('title', 'Donasi Program – TPQ Al-Mukharijin'); ?>
 
+<?php $__env->startSection('meta_description', 'Donasi untuk program TPQ Al-Mukharijin Desa Kreman. Bantu kami mendidik generasi Qurani yang berakhlak mulia.'); ?>
+<?php $__env->startSection('og_title', 'Donasi Program – TPQ Al-Mukharijin'); ?>
+
 <?php $__env->startSection('content'); ?>
 
 

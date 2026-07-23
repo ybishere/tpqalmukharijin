@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Kegiatan – TPQ Al-Mukharijin')
 
+@section('meta_description', 'Dokumentasi kegiatan TPQ Al-Mukharijin – foto dan agenda kegiatan santri, wisuda, Ramadhan, dan berbagai kegiatan islami lainnya.')
+@section('og_title', 'Kegiatan – TPQ Al-Mukharijin')
+
 @section('content')
 
 {{-- ═══ HERO — sama seperti halaman lain ═══ --}}

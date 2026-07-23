@@ -12,6 +12,7 @@ class Donasi extends Model
         'program_id',
         'admin_id',
         'nama_donatur',
+        'no_wa_donatur',
         'jumlah',
         'metode',
         'status_bayar',
