@@ -13,12 +13,7 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
-RUN cp .env.example .env || true
-
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 RUN echo '<Directory /var/www/html/public>\n\
     Options Indexes FollowSymLinks\n\
@@ -28,7 +23,4 @@ RUN echo '<Directory /var/www/html/public>\n\
 
 EXPOSE 80
 
-CMD php artisan migrate --force && \
-    php artisan storage:link && \
-    php artisan optimize && \
-    apache2-foreground
+CMD ["sh", "-c", "php artisan migrate --force && php artisan storage:link && php artisan optimize && apache2-foreground"]
