@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Profile;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,6 +13,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         View::composer('layouts.app', function ($view) {
             $view->with('profil', Profile::first());
         });
