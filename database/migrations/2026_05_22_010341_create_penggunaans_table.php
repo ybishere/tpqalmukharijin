@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('bukti_foto', 255)->nullable();
             $table->timestamps();
 
-            $table->foreign('admin_id')->references('id_admin')->on('admins')->onDelete('set null');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('set null');
         });
     }
 
