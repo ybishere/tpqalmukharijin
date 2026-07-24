@@ -58,8 +58,8 @@ Route::post('/donasi/webhook', [App\Http\Controllers\DonasiPublikController::cla
 Route::get('/donasi/status/{id}', [App\Http\Controllers\DonasiPublikController::class, 'status'])
     ->name('donasi.status');
 
-// Simulasi pembayaran sukses (hanya untuk testing lokal)
-if (app()->environment('local')) {
+// Simulasi pembayaran sukses (aktif jika APP_DEBUG=true)
+if (config('app.debug')) {
     Route::get('/donasi/{id}/simulasi-sukses', [App\Http\Controllers\DonasiPublikController::class, 'simulasiSukses'])
         ->name('donasi.simulasi');
 }

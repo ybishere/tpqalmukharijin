@@ -188,7 +188,7 @@ class DonasiPublikController extends Controller
 
     public function simulasiSukses($id)
     {
-    if (!app()->environment('local')) {
+    if (!config('app.debug')) {
         abort(404);
     }
 
