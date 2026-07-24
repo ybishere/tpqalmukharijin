@@ -45,7 +45,7 @@
                 💳 Bayar Sekarang
             </button>
 
-        @if(app()->environment('local'))
+            @if(config('app.debug'))
             <div class="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
                 <p class="text-xs text-amber-600 font-semibold mb-2">🧪 Mode Testing</p>
                 <a href="{{ route('donasi.simulasi', $donasi->id_donasi) }}"
@@ -53,7 +53,13 @@
                     ✅ Simulasi Pembayaran Berhasil
                 </a>
             </div>
-        @endif
+            @else
+            <div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                <p class="text-xs text-blue-600 text-center">
+                    ℹ️ Ini adalah sistem donasi berbasis QRIS. Klik <strong>Bayar Sekarang</strong> untuk melanjutkan pembayaran melalui Midtrans.
+                </p>
+            </div>
+            @endif
 
             <a href="{{ route('beranda') }}" class="text-xs text-gray-400 hover:text-gray-600">
                 Batalkan & kembali ke beranda
